@@ -6,5 +6,5 @@ Flask app
 
 Demo:
 
-![alt text](https://github.com/pramod4040/Devanagari_digit_recog/blob/master/images/digit-go.gif?raw=true)
+![alt text](https://github.com/pramod4040/Devanagari_digit_recog/blob/master/images/all-digit.gif?raw=true)
 
