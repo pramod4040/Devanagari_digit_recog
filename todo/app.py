@@ -32,7 +32,6 @@ def encode():
             decoded_image_data = base64.decodebytes(base64_img_bytes)
             fh.write(decoded_image_data)
 
-
         # image_name = '../images/aa_{}.png'.format(a)
         # value = pre.predict_character(image_name)
         image_name = '../images/numbers/aa_{}.png'.format(a)

@@ -81,7 +81,7 @@ class NumberPredict:
         result_list = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
         dict_result = dict(zip(label, result_list))
         return dict_result[result]
-    
+
 
     def predict_character(self, raw_image):
         a = random.randint(100,900)
@@ -110,11 +110,18 @@ class NumberPredict:
         # print(results.shape)
 
         result = np.argmax(results)
+        # self.print_percentage_of_result(results)
 
     
 
         #return appropriate result
         return self.map_index_with_result(result)
+
+
+    def print_percentage_of_result(self,results):
+        print(results / 100)
+        return
+    
 
 
 def create_object():
