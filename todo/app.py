@@ -1,17 +1,31 @@
+import os
 from flask import Flask, render_template, request, jsonify
-import sys
 import random
 import base64
 import re
 
-import identifiers.predict as pre
+import identifiers.EnsembleModel as model
+# import pickle
 
-import identifiers.number_predict as npre
 app = Flask(__name__)
+
+FLASH_ROOT = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.join(FLASH_ROOT, '..')
+
+
 
 
 @app.route('/')
 def hello_world():
+    """ Print Hello world as the response body.  """
+    a = __name__
+    # k = pre.predit(a)
+    value = {"status": 200, "message": "All Okay"}
+    return jsonify(value)
+
+
+@app.route('/try-it-out')
+def hello_world_index():
     """ Print Hello world as the response body.  """
     a = __name__
     # k = pre.predit(a)
@@ -24,18 +38,24 @@ def encode():
         base64_img = request.json['image']
         a = random.randint(100, 900)
         base64_data = re.sub('^data:image/.+;base64,', '', base64_img)
-        # print(base64_data)
-        # print("BYtes utf 8 start")
         base64_img_bytes = base64_data.encode('utf-8')
-        # print(base64_img_bytes)
-        with open("../images/numbers/aa_{}.png".format(a), "wb") as fh:
+
+        current_path = os.getcwd()
+        imgName = f"nepchar_{a}.png"
+        imagePath = os.path.join(current_path, 'images', 'test_data', imgName)
+        # print(os.path())
+        # "imagePath"/aa_{}.png".format(a)
+        with open(imagePath, "wb") as fh:
             decoded_image_data = base64.decodebytes(base64_img_bytes)
             fh.write(decoded_image_data)
 
-        # image_name = '../images/aa_{}.png'.format(a)
-        # value = pre.predict_character(image_name)
-        image_name = '../images/numbers/aa_{}.png'.format(a)
-        value = npre.predict_number(image_name)
+        image_path = os.path.join(ROOT_DIR, "images", "test_data", imgName)
+
+        # loaded_model = pickle.load(open('devnagari-best-model.pkl', 'rb'))
+        # predicted_label = loaded_model.predict(imagePath)
+
+        predicted_label = model.magic(image_path)
+        value = {"predicted": predicted_label, "percentage": "100%"}
         print("--------------------from prediction----------------")
         print(value)
-        return value
+        return jsonify(value)

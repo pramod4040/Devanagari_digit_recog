@@ -89,7 +89,7 @@
      var canvas = document.getElementById("sig-canvas");
      var ctx = canvas.getContext("2d");
      ctx.strokeStyle = "#222222";
-     ctx.lineWidth = 10;
+     ctx.lineWidth = 20;
      ctx.strokeStyle = "white";
 
     //  changing color
@@ -98,7 +98,7 @@
      ctx.fillStyle = "black";
      ctx.fill();
      
-    //  ctx.fontWeight = 800;
+     ctx.fontWeight = 800;
 
      var drawing = false;
      var mousePos = {
@@ -199,7 +199,7 @@
      function clearCanvas() {
        canvas.width = canvas.width;
        var ctx = canvas.getContext("2d");
-       ctx.lineWidth = 10;
+       ctx.lineWidth = 20;
        ctx.strokeStyle = "white";
        $("#result-box").text("")
       //  changing color
@@ -245,7 +245,10 @@
                data: JSON.stringify(devnaga),
                async: false,
                success: function (data) {
-                   $('#result-box').text(data)
+                   let predicted = data.predicted
+                   let percent = data.percentage
+                  //  $('#result-box').text(predicted + "  " + percent)
+                   $('#result-box').text(predicted)
                    console.log('Image send');
                },
                cache: false,

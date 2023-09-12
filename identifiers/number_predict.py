@@ -1,12 +1,66 @@
-import tensorflow as tf
 import os
+import tensorflow as tf
 from tensorflow.keras.models import model_from_json
+from tensorflow.keras.models import load_model
+from tensorflow.keras import Sequential
+from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import Conv2D, Input, MaxPooling2D, Flatten, Dense
 from skimage import io
 import cv2
 import numpy as np
 from PIL import Image
 from resizeimage import resizeimage
 import random
+
+
+class DevnagariCharacter:
+    def __init__(self, weightPath):
+        self.weightPath = weightPath
+
+    def create_model(self):
+        model = Sequential()
+
+        # Block 1
+        model.add(Conv2D(8, (3, 3), activation='relu', padding='same', input_shape=(32, 32, 3)))
+        model.add(Conv2D(8, (3, 3), activation='relu', padding='same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+        # Block 2
+        model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(16, (3, 3), activation='relu', padding='same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+        # Block 3
+        model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(32, (3, 3), activation='relu', padding='same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+        # Block 4
+        model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+        model.add(Conv2D(64, (3, 3), activation='relu', padding='same'))
+        model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+        # Block 5
+        # model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        # model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        # model.add(Conv2D(512, (3, 3), activation='relu', padding='same'))
+        # model.add(MaxPooling2D(pool_size=(2, 2), strides=(2, 2)))
+
+        # Fully connected layers
+        model.add(Flatten())
+        model.add(Dense(1048, activation='relu'))
+        model.add(Dense(1048, activation='relu'))
+        model.add(Dense(36, activation='softmax'))  # Assumes 36 classes
+
+        return model
+    
+    def load_trained_model(self):
+        model = self.create_model()
+        model.load_weights(self.weightPath)
+        return model
+    
 
 
 class NumberPredict:
@@ -18,8 +72,11 @@ class NumberPredict:
         a = random.randint(100,900)
         img = Image.open(img_path)
         img = resizeimage.resize_contain(img, [32,32])
-        img.save('../images/numbers/aaa_32_32_{}.png'.format(a), img.format)
-        return ('../images/numbers/aaa_32_32_{}.png'.format(a))
+        current_path = os.getcwd()
+        imgName = f'aaa_32_32_{a}.png'
+        imagePath = os.path.join(current_path, 'images', 'numbers', imgName)
+        img.save(imagePath, img.format)
+        return imagePath
 
 
     def average_pixels_value_in_8_by_8(self, image_in_numpy):
@@ -38,7 +95,9 @@ class NumberPredict:
     def prepare_image(self, raw_image, method=None):
         if method == 'resize_32':
             img_32_path = self.resize_image_into_32_32(raw_image)
-            image_in_numpy = cv2.imread(img_32_path, cv2.IMREAD_GRAYSCALE)
+            # image_in_numpy = cv2.imread(img_32_path, cv2.IMREAD_GRAYSCALE)
+            image_in_numpy = cv2.imread(img_32_path)
+
             return image_in_numpy
 
         print(raw_image)
@@ -46,9 +105,11 @@ class NumberPredict:
         print(image_in_numpy.shape)
 
         #convert into grayscale image
-        image_in_numpy = cv2.cvtColor(image_in_numpy, cv2.COLOR_RGB2GRAY)
+        # image_in_numpy = cv2.cvtColor(image_in_numpy, cv2.COLOR_RGB2GRAY)
+        image_in_numpy = cv2.cvtColor(image_in_numpy)
         print("gray shape image")
         print(image_in_numpy.shape)
+    
         # image_in_numpy = image_in_numpy / 255
         # print(image_in_numpy)
 
@@ -64,23 +125,38 @@ class NumberPredict:
         return gg
 
 
-    def load_model(self):
-        path_for_json = '/home/pranil/learning/machine_learning/devanagari_character/identifiers/trained_model/nepali_digit_model/model-0-9-98-precision.json'
-        path_for_weights = '/home/pranil/learning/machine_learning/devanagari_character/identifiers/trained_model/nepali_digit_model/weights-0-9-98-precision.h5'
+    def load_model(self, modelName=None):
+        # currentPath = os.getcwd()
+        # path_for_json = os.path.join(currentPath, 'identifiers', 'trained_model', 'nepali_digit_model', 'model-0-9-98-precision.json')
+        # path_for_weights = os.path.join(currentPath, 'identifiers', 'trained_model', 'nepali_digit_model', 'weights-0-9-98-precision.h5')
     
-        with open(path_for_json) as json_file:
-            loaded_model_json = json_file.read()
-            loaded_model = model_from_json(loaded_model_json)
-            json_file.close()
-        loaded_model.load_weights(path_for_weights)
-        loaded_model.compile(loss='categorical_crossentropy', optimizer='adam',  metrics=[tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
-        return loaded_model
+        # with open(path_for_json) as json_file:
+        #     loaded_model_json = json_file.read()
+        #     loaded_model = model_from_json(loaded_model_json)
+        #     json_file.close()
+        # loaded_model.load_weights(path_for_weights)
+        # loaded_model.compile(loss='categorical_crossentropy', optimizer='adam',  metrics=[tf.keras.metrics.Precision(), tf.keras.metrics.Recall()])
+        # return loaded_model
     
-    def map_index_with_result(self, result):
-        label = [i for i in range(0,10)]
-        result_list = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
+
+        currentPath = os.getcwd()
+        weightPath = os.path.join(currentPath, 'identifiers', 'trained_model', 'consonants_model.h5')
+        model = DevnagariCharacter(weightPath).load_trained_model()
+        return model
+    
+    
+    def map_index_with_result(self, result, percent):
+        # label = [i for i in range(0,10)]
+        # result_list = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine']
+        # dict_result = dict(zip(label, result_list))
+
+
+        label = [i for i in range(0, 36)]
+        result_list = ['ka','kha','ga','gha','ŋa','cha','chha','ja','jha','ña','ta','tha','da','dha','ṇa','ṭa','ṭha','ḍa','ḍha','na','pa','pha','ba','bha','ma','ya','ra','la','wa','sa','sa','sa','ha','chhya','ṭra','gya']
         dict_result = dict(zip(label, result_list))
-        return dict_result[result]
+
+        a = {"predicted":dict_result[result], "percentage": percent * 100 }
+        return a
 
 
     def predict_character(self, raw_image):
@@ -106,16 +182,16 @@ class NumberPredict:
 
         #predict
         results = loaded_model.predict(clean_image)
-        # print(results)
         # print(results.shape)
 
         result = np.argmax(results)
+        percent = results.max()
         # self.print_percentage_of_result(results)
 
     
 
         #return appropriate result
-        return self.map_index_with_result(result)
+        return self.map_index_with_result(result, percent)
 
 
     def print_percentage_of_result(self,results):
