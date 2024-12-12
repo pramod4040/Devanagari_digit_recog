@@ -7,6 +7,8 @@ import re
 # from ..identifiers.EnsembleModel import EnsembleModelCharacter as model
 
 import identifiers.EnsembleModel as model
+from identifiers.predict import predict_character
+
 # import pickle
 
 app = Flask(__name__)
@@ -29,7 +31,7 @@ def hello_world():
 @app.route('/try-it-out')
 def hello_world_index():
     """ Print Hello world as the response body.  """
-    a = __name__
+    # a = __name__
     # k = pre.predit(a)
     return render_template("index.html")
 
@@ -57,8 +59,16 @@ def encode():
             # loaded_model = pickle.load(open('devnagari-best-model.pkl', 'rb'))
             # predicted_label = loaded_model.predict(imagePath)
 
-            predicted_label = model.magic(image_path)
-            value = {"predicted": predicted_label, "percentage": "100%"}
+            # predicted_label = model.magic(image_path)
+            print(image_path)
+            
+            result = predict_character(image_path)
+            print(f"Predicted: {result['class']} with {result['confidence']:.2%} confidence")
+            
+            value = {
+                "predicted": result['class'], 
+                "percentage": f"{result['confidence']:.2%}"
+            }
             print("--------------------from prediction----------------")
             print(value)
             return jsonify(value)
