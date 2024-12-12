@@ -39,12 +39,22 @@ def efficient_model_two():
 
 
 def getEfficientModel():
-    feature_vector_A = efficient_model_one()
+    # feature_vector_A = efficient_model_one()
+    
+    # feature_vector_B = efficient_model_two()
 
-    feature_vector_B = efficient_model_two()
+    # Build model one
+    m1 = efficient_model_one()
+    feature_vector_A = m1(img_A_inp)
+    
+    # Build model two
+    m2 = efficient_model_two()
+    feature_vector_B = m2(img_A_inp)
+
+    print(f'Feature vector A shape: {feature_vector_A} Feature vector B Shape: {feature_vector_B}')
 
 
-    concat = layers.Concatenate()([feature_vector_A.output, feature_vector_B.output])
+    concat = layers.Concatenate()([feature_vector_A, feature_vector_B])
 
     dense1 = layers.Dense(512, activation='relu')(concat)
     drop1 = layers.Dropout(0.2)(dense1)

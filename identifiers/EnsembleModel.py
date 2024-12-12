@@ -1,20 +1,9 @@
 import os
 import tensorflow as tf
-# from tensorflow.keras.models import model_from_json
-# from tensorflow.keras.models import load_model
-# from tensorflow.keras import Sequential
-# from tensorflow.keras.models import load_model
-# from tensorflow.keras.layers import Conv2D, Input, MaxPooling2D, Flatten, Dense
 from tensorflow.keras.models import model_from_json
-from skimage import io
-import cv2
 import numpy as np
 from PIL import Image, ImageOps
-from resizeimage import resizeimage
-import random
-# import all_class_names 
 from .CreateEnsModel import getEfficientModel, get_class_names
-import pickle
 
 
 class EnsembleModelCharacter:
@@ -47,7 +36,6 @@ class EnsembleModelCharacter:
 
         predictedLabel = self.class_names[np.argmax(scores)]
         return predictedLabel
-
 
 
 def magic(imagePath):

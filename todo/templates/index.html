@@ -89,7 +89,7 @@
      var canvas = document.getElementById("sig-canvas");
      var ctx = canvas.getContext("2d");
      ctx.strokeStyle = "#222222";
-     ctx.lineWidth = 20;
+     ctx.lineWidth = 10;
      ctx.strokeStyle = "white";
 
     //  changing color
@@ -121,11 +121,12 @@
      }, false);
 
      // Add touch event support for mobile
-     canvas.addEventListener("touchstart", function(e) {
-
-     }, false);
+    //  canvas.addEventListener("touchstart", function(e) {
+    //     e.preventDefault();
+    //  }, false);
 
      canvas.addEventListener("touchmove", function(e) {
+      e.preventDefault();
        var touch = e.touches[0];
        var me = new MouseEvent("mousemove", {
          clientX: touch.clientX,
@@ -135,6 +136,7 @@
      }, false);
 
      canvas.addEventListener("touchstart", function(e) {
+       e.preventDefault();
        mousePos = getTouchPos(canvas, e);
        var touch = e.touches[0];
        var me = new MouseEvent("mousedown", {
@@ -145,6 +147,7 @@
      }, false);
 
      canvas.addEventListener("touchend", function(e) {
+       e.preventDefault();
        var me = new MouseEvent("mouseup", {});
        canvas.dispatchEvent(me);
      }, false);
@@ -199,7 +202,7 @@
      function clearCanvas() {
        canvas.width = canvas.width;
        var ctx = canvas.getContext("2d");
-       ctx.lineWidth = 20;
+       ctx.lineWidth = 10;
        ctx.strokeStyle = "white";
        $("#result-box").text("")
       //  changing color
