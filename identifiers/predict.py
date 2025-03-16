@@ -56,7 +56,7 @@ def map_index_with_result(result_index):
 
 
 
-def predict_character(image_path: str, model_type: str = 'ensemble') -> Dict[str, Union[str, float]]:
+def predict_character(image_path: str, model_type: str = 'ensemble', weightPath: str = None) -> Dict[str, Union[str, float]]:
     """
     Predict the character in the given image using the specified model type.
     
@@ -68,7 +68,7 @@ def predict_character(image_path: str, model_type: str = 'ensemble') -> Dict[str
         Dict containing the predicted class and confidence score
     """
     # Create model using factory
-    model = ModelFactory.create_model(model_type)
+    model = ModelFactory.create_model(model_type, weightPath)
     
     # Preprocess the image and get prediction
     # preprocessed_image = model.preprocess_image(image_path)

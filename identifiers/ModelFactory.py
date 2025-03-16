@@ -2,12 +2,18 @@ import os
 from typing import Dict, Type, Optional
 from .AbstractModel import AbstractDigitModel
 from .EnsembleModel import EnsembleModelCharacter
+from .MoeModelOne import MoeModelOne
+from .MoeModelNew import MoeModelNew
+from .MoeModelOptimized import EnhancedMoeModel
 
 class ModelFactory:
     """Factory class for creating digit recognition models"""
     
     _models: Dict[str, Type[AbstractDigitModel]] = {
         'ensemble': EnsembleModelCharacter,
+        'moe': MoeModelOne,
+        'newMoe': MoeModelNew,
+        'enhancedMoeModel': EnhancedMoeModel
         # Add more model types here as they are implemented
     }
     

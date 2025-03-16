@@ -1,4 +1,7 @@
 __pycache__/
 venv/
 .venv/
+todoPlan
+data/*
+trainModel/*
 

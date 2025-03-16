@@ -13,6 +13,6 @@ Demo:
 
 ```
 - Activate virtual environment
-python3 -m flask run --debug --reload
+- python3 -m flask run --debug --reload
 ```
 

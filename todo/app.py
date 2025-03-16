@@ -61,8 +61,26 @@ def encode():
 
             # predicted_label = model.magic(image_path)
             print(image_path)
+
+            # weight_path = os.path.join(
+            #     os.getcwd(), 
+            #     "identifiers", 
+            #     "trained_model", 
+            #     "nepali_char_moe_model.1.weights.h5"
+            # )
+
+            weight_path = os.path.join(
+                os.getcwd(), 
+                "trainModel", 
+                "model_checkpoints", 
+                "moe_optimized_model-23-0.9473.weights.h5"
+            )
+
+            print("--------------------weight path is ----------------")
+            print(weight_path)
             
-            result = predict_character(image_path)
+            result = predict_character(image_path, "enhancedMoeModel", weightPath=weight_path)
+            #  result = predict_character(image_path)
             print(f"Predicted: {result['class']} with {result['confidence']:.2%} confidence")
             
             value = {

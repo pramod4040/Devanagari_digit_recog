@@ -32,18 +32,18 @@ class AbstractDigitModel(ABC):
         """
         pass
     
-    @abstractmethod
-    def preprocess_image(self, image_path: str):
-        """
-        Preprocess an image for model inference.
+    # @abstractmethod
+    # def preprocess_image(self, image_path: str):
+    #     """
+    #     Preprocess an image for model inference.
         
-        Args:
-            image_path (str): Path to the input image
+    #     Args:
+    #         image_path (str): Path to the input image
             
-        Returns:
-            Preprocessed image in the format expected by the model
-        """
-        pass
+    #     Returns:
+    #         Preprocessed image in the format expected by the model
+    #     """
+    #     pass
     
     @abstractmethod
     def predict(self, image):

@@ -21,25 +21,42 @@ class EnsembleModelCharacter(AbstractDigitModel):
     
     def load_weights(self):
         self.model.load_weights(self.weight_path)
-    
-    def preprocess_image(self, image_path):
-        img = Image.open(image_path)
-        img = ImageOps.grayscale(img)
-        img = img.resize((32, 32))
-        img_array = np.array(img)
-        img_array = img_array / 255.0
-        img_array = np.expand_dims(img_array, axis=0)
-        img_array = np.expand_dims(img_array, axis=-1)
-        return img_array
-    
-    def predict(self, image):
-        predictions = self.model.predict(image)
-        predicted_class = np.argmax(predictions[0])
-        confidence = predictions[0][predicted_class]
+
+    def predict(self, imagePath):
+        imgpath = imagePath
+        img = Image.open(imgpath).resize((32,32)).convert("RGB")
+
+        # print(img.size)
+        # img = ImageOps.invert(img)
+
+        imgNumpy = np.array(img)
+        imgNumpy = tf.expand_dims(imgNumpy, 0)
+
+        print(imgNumpy.shape)
+        
+        predictions = self.model.predict(imgNumpy)
+        scores = tf.nn.softmax(predictions)
+
+        print(scores)
+
+        predictedLabel = self.class_names[np.argmax(scores)]
+        confidence = np.argmax(scores)
+        print(predictedLabel)
+
         return {
-            'class': self.class_names[predicted_class],
+            'class': predictedLabel,
             'confidence': float(confidence)
         }
+    
+    # def predict(self, image):
+    #     predictions = self.model.predict(image)
+    #     predicted_class = np.argmax(predictions[0])
+    #     confidence = predictions[0][predicted_class]
+    #     return {
+    #         'class': self.class_names[predicted_class],
+    #         'confidence': float(confidence)
+    #     }
+
 
 
 def get_class_names():
@@ -89,4 +106,5 @@ def get_class_names():
     'digit_7',
     'digit_8',
     'digit_9']
+
     return class_names
