@@ -3,6 +3,10 @@ from flask import Flask, render_template, request, jsonify
 import random
 import base64
 import re
+import numpy as np
+from PIL import Image
+import os
+import matplotlib.pyplot as plt
 
 # from ..identifiers.EnsembleModel import EnsembleModelCharacter as model
 
@@ -34,6 +38,13 @@ def hello_world_index():
     # a = __name__
     # k = pre.predit(a)
     return render_template("index.html")
+
+
+@app.route('/model-list')
+def model_list():
+    """ Print Hello world as the response body.  """
+    value = {"status": 200, "message": "All Okay"}
+    return jsonify(value)
 
 
 @app.route('/encode', methods=['POST'])
@@ -69,17 +80,35 @@ def encode():
             #     "nepali_char_moe_model.1.weights.h5"
             # )
 
+# ------ -          Model enhancedMoeModel------
+            # weight_path = os.path.join(
+            #     os.getcwd(), 
+            #     "trainModel", 
+            #     "model_checkpoints", 
+            #     "moe_optimized_model-23-0.9473.weights.h5"
+            # )
+
+            # result = predict_character(image_path, "enhancedMoeModel", weightPath=weight_path)
+# ------ -          Model enhancedMoeModel------
+
             weight_path = os.path.join(
                 os.getcwd(), 
                 "trainModel", 
                 "model_checkpoints", 
-                "moe_optimized_model-23-0.9473.weights.h5"
+                "MoeModelV2_moe_optimized_model-3-expert-20-0.9737.weights.h5"
             )
 
             print("--------------------weight path is ----------------")
             print(weight_path)
+
+            # img = Image.open(image_path).resize((32, 32)).convert("RGB")
+            # img_array = np.array(img)
+
+            # img = Image.fromarray(img_array)
+            # img.show()
+
             
-            result = predict_character(image_path, "enhancedMoeModel", weightPath=weight_path)
+            result = predict_character(image_path, "moeModelV2Good", weightPath=weight_path)
             #  result = predict_character(image_path)
             print(f"Predicted: {result['class']} with {result['confidence']:.2%} confidence")
             

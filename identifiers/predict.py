@@ -70,6 +70,8 @@ def predict_character(image_path: str, model_type: str = 'ensemble', weightPath:
     # Create model using factory
     model = ModelFactory.create_model(model_type, weightPath)
     
+    # print(model.model.summary())
+    
     # Preprocess the image and get prediction
     # preprocessed_image = model.preprocess_image(image_path)
 
@@ -83,9 +85,19 @@ def check_argmax():
     r = np.argmax(collection)
     return r
 
+def models_and_weights():
+    models = ModelFactory.get_models()
+    for model in models:
+        print(model)
+ 
+
+
+
 if __name__ == "__main__":
     # Example usage
-    image_path = "path/to/your/image.jpg"
-    result = predict_character(image_path)
-    print(f"Predicted class: {result['class']}")
-    print(f"Confidence: {result['confidence']:.2%}")
+    # image_path = "path/to/your/image.jpg"
+    # result = predict_character(image_path)
+    # print(f"Predicted class: {result['class']}")
+    # print(f"Confidence: {result['confidence']:.2%}")
+
+    models_and_weights()

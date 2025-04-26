@@ -89,7 +89,7 @@
      var canvas = document.getElementById("sig-canvas");
      var ctx = canvas.getContext("2d");
      ctx.strokeStyle = "#222222";
-     ctx.lineWidth = 10;
+     ctx.lineWidth = 14;
      ctx.strokeStyle = "white";
 
     //  changing color
@@ -98,7 +98,7 @@
      ctx.fillStyle = "black";
      ctx.fill();
      
-     ctx.fontWeight = 800;
+     ctx.fontWeight = 1000;
 
      var drawing = false;
      var mousePos = {
@@ -202,7 +202,7 @@
      function clearCanvas() {
        canvas.width = canvas.width;
        var ctx = canvas.getContext("2d");
-       ctx.lineWidth = 10;
+       ctx.lineWidth = 14;
        ctx.strokeStyle = "white";
        $("#result-box").text("")
       //  changing color

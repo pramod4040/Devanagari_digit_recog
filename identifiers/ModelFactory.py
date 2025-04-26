@@ -5,6 +5,7 @@ from .EnsembleModel import EnsembleModelCharacter
 from .MoeModelOne import MoeModelOne
 from .MoeModelNew import MoeModelNew
 from .MoeModelOptimized import EnhancedMoeModel
+from .MoeModelV2Good import MoeModelV2Good
 
 class ModelFactory:
     """Factory class for creating digit recognition models"""
@@ -13,9 +14,14 @@ class ModelFactory:
         'ensemble': EnsembleModelCharacter,
         'moe': MoeModelOne,
         'newMoe': MoeModelNew,
-        'enhancedMoeModel': EnhancedMoeModel
+        'enhancedMoeModel': EnhancedMoeModel,
+        'moeModelV2Good': MoeModelV2Good
         # Add more model types here as they are implemented
     }
+
+    @classmethod
+    def get_models(cls) -> Dict[str, Type[AbstractDigitModel]]:
+        return cls._models
     
     @classmethod
     def create_model(cls, 
@@ -52,6 +58,7 @@ class ModelFactory:
             
         # Create and return the model instance
         model_class = cls._models[model_type]
+        print("Creating model is about to done!")
         return model_class(weight_path, class_names)
     
     @classmethod
