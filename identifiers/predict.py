@@ -6,8 +6,11 @@ import numpy as np
 from PIL import Image
 import random
 from typing import Dict, Union
-from .ModelFactory import ModelFactory
+# from .ModelFactory import ModelFactory
+from identifiers.ModelFactory import ModelFactory
 
+
+current_file = os.path.abspath(__file__)
 
 def prepare_image(raw_image):
     print(raw_image)
@@ -85,12 +88,56 @@ def check_argmax():
     r = np.argmax(collection)
     return r
 
+# Traverse up until you find the top-level folder you expect
+def get_project_root(target_folder_name: str = "Devanagari_digit_recog"):
+    path = current_file
+    while True:
+        path, folder = os.path.split(path)
+        if folder == target_folder_name:
+            return os.path.join(path, folder)
+        if folder == "":
+            raise Exception(f"Could not find folder named {target_folder_name}")
+
+project_root = get_project_root()
+
 def models_and_weights():
     models = ModelFactory.get_models()
+    modelDetails = []
     for model in models:
-        print(model)
- 
+        if model == 'enhancedMoeModel':
+            weight_path = os.path.join(
+                project_root,
+                "trainModel", 
+                "model_checkpoints", 
+                "moe_optimized_model-23-0.9473.weights.h5"
+            )
+            details = { "modelName": 'enhancedMoeModel',
+                        "weightPath": weight_path,
+                        "description": "Enhanced mode model with 3 experts!"
+                       }
+            modelDetails.append(details)
+        elif model == 'moeModelV2Good':
+            weight_path = os.path.join(
+                project_root,
+                "trainModel", 
+                "model_checkpoints", 
+                "MoeModelV2_moe_optimized_model-3-expert-20-0.9737.weights.h5"
+            )
+            details = { "modelName": 'moeModelV2Good',
+                        "weightPath": weight_path,
+                        "description": "Enhanced mode model with 4 experts and trained 25 epochs best model so far!"
+                       }
+            modelDetails.append(details)
 
+        
+    return modelDetails   
+
+def get_model_details(modelName):
+    modelDetails = models_and_weights()
+    for model in modelDetails:
+        if model['modelName'] == modelName:
+            return model
+        
 
 
 if __name__ == "__main__":
@@ -100,4 +147,5 @@ if __name__ == "__main__":
     # print(f"Predicted class: {result['class']}")
     # print(f"Confidence: {result['confidence']:.2%}")
 
-    models_and_weights()
+    result = models_and_weights()
+    print(result)

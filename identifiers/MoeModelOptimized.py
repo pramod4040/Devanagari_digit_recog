@@ -154,23 +154,51 @@ class EnhancedMoeModel:
         
         self.model = models.Model(inputs=input_layer, outputs=moe_output, name="enhanced_moe_model")
 
+    # def load_weights(self):
+    #     """Load model weights from the specified path"""
+    #     try:
+    #         # Load weights by name, ignoring missing layers or shape mismatch
+    #         self.model.load_weights(self.weight_path, by_name=True, skip_mismatch=True)
+    #         print(f"Successfully loaded weights from {self.weight_path}")
+            
+    #         # Compile the model after loading weights
+    #         optimizer = Adam(learning_rate=0.001)
+    #         self.model.compile(
+    #             optimizer=optimizer,
+    #             loss='categorical_crossentropy',
+    #             metrics=['accuracy']
+    #         )
+                        
+    #     except Exception as e:
+    #         print(f"Error loading weights: {e}")
+
     def load_weights(self):
         """Load model weights from the specified path"""
         try:
-            # Load weights by name, ignoring missing layers or shape mismatch
-            self.model.load_weights(self.weight_path, by_name=True, skip_mismatch=True)
+            # Try loading weights without the by_name parameter
+            self.model.load_weights(self.weight_path)
             print(f"Successfully loaded weights from {self.weight_path}")
             
-            # Compile the model after loading weights
-            optimizer = Adam(learning_rate=0.001)
-            self.model.compile(
-                optimizer=optimizer,
-                loss='categorical_crossentropy',
-                metrics=['accuracy']
-            )
-                        
         except Exception as e:
-            print(f"Error loading weights: {e}")
+            # If that fails, try alternative approaches
+            try:
+                # Try load_model if available
+                if hasattr(tf.keras.models, 'load_model'):
+                    temp_model = tf.keras.models.load_model(self.weight_path)
+                    self.model.set_weights(temp_model.get_weights())
+                    print(f"Successfully loaded weights via load_model from {self.weight_path}")
+                else:
+                    print(f"Could not load weights: {e}")
+            except Exception as e2:
+                print(f"Error loading weights: {e2}")
+        
+        # Compile the model after loading weights
+        optimizer = Adam(learning_rate=0.001)
+        self.model.compile(
+            optimizer=optimizer,
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
     
     def save_weights(self, filepath):
         """Save model weights to the specified path"""

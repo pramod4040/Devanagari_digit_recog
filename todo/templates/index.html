@@ -44,6 +44,14 @@
             <h1 id="result-box"></h1>
         </div>
     </div>
+
+    <div class=col-md-12>
+      <h5>Select Model</h5>
+        <select name="modelName" id="modelName">
+            <option value="mode_model">Mode Model</option>
+            <option value="good_mode">My Model</option>
+        </select>
+  </div>
   </div>
   <div class="row">
     <div class="col-md-12">
@@ -240,6 +248,7 @@
          // console.log(image)
          devnaga = {
             'image': imagename,
+            'modelName': $('#modelName').val()
          };
          if(imagename != ''){
            $.ajax({
@@ -261,6 +270,37 @@
          }
 
         });
+});
+
+// make axios call to /mode-list
+$(function() {
+    // $('#model-list').bind('click', function() {
+        $.ajax({
+            url: "/model-list",
+            type: 'GET',
+            async: false,
+            success: function (data) {
+                console.log(data);
+                $('#modelName').empty();
+
+                data.modelDetails.forEach(element => {
+                  $('#modelName').append($('<option>', {
+                        value: element.modelName,
+                        text: element.modelName
+                    }));
+                });
+                // for (let i = 0; i < data.modelDetails.length; i++) {
+                //     $('#modelName').append($('<option>', {
+                //         value: data.modelDetails[i].modelName,
+                //         text: data.modelDetails[i].modelName
+                //     }));
+                // }
+            },
+            cache: false,
+            contentType: 'application/json',
+            processData: false
+        });
+    // });
 });
 
 

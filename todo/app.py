@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 # from ..identifiers.EnsembleModel import EnsembleModelCharacter as model
 
 import identifiers.EnsembleModel as model
-from identifiers.predict import predict_character
+from identifiers.predict import predict_character, models_and_weights, get_model_details
 
 # import pickle
 
@@ -43,7 +43,8 @@ def hello_world_index():
 @app.route('/model-list')
 def model_list():
     """ Print Hello world as the response body.  """
-    value = {"status": 200, "message": "All Okay"}
+    modelDetails = models_and_weights()
+    value = {"status": 200, "modelDetails": modelDetails}
     return jsonify(value)
 
 
@@ -55,6 +56,8 @@ def encode():
             a = random.randint(100, 900)
             base64_data = re.sub('^data:image/.+;base64,', '', base64_img)
             base64_img_bytes = base64_data.encode('utf-8')
+
+            userReqModelName = request.json['modelName']
 
             current_path = os.getcwd()
             imgName = f"nepchar_{a}.png"
@@ -107,8 +110,9 @@ def encode():
             # img = Image.fromarray(img_array)
             # img.show()
 
+            modelInfo = get_model_details(userReqModelName)
             
-            result = predict_character(image_path, "moeModelV2Good", weightPath=weight_path)
+            result = predict_character(image_path, model_type=modelInfo['modelName'], weightPath=modelInfo['weightPath'])
             #  result = predict_character(image_path)
             print(f"Predicted: {result['class']} with {result['confidence']:.2%} confidence")
             
